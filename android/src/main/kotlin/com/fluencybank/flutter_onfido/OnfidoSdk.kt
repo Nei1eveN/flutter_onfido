@@ -33,7 +33,11 @@ class OnfidoSdk(
         }
     }
 
-    fun start(config: HashMap<String, Any?>, listenToUserEvents: Boolean, result: MethodChannel.Result?) {
+    fun start(
+        config: HashMap<String, Any?>,
+        listenToUserEvents: Boolean,
+        result: MethodChannel.Result?
+    ) {
         setFlutterResult(result)
         try {
             val sdkToken: String
@@ -80,7 +84,7 @@ class OnfidoSdk(
     }
 
     private fun startListeningToUserEvents() {
-        Onfido.userEventHandler = object: UserEventHandler() {
+        Onfido.userEventHandler = object : UserEventHandler() {
             override fun handleEvent(eventName: String, eventProperties: Properties) {
                 try {
                     val properties = hashMapOf("name" to eventName, "properties" to eventProperties)
@@ -147,35 +151,35 @@ class OnfidoSdk(
                     val flowStep = when (docTypeEnum) {
                         DocumentType.PASSPORT -> DocumentCaptureStepBuilder.forPassport()
                         DocumentType.NATIONAL_IDENTITY_CARD -> DocumentCaptureStepBuilder.forNationalIdentity()
-                                .let {
-                                    if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
-                                    else it
-                                }
+                            .let {
+                                if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
+                                else it
+                            }
                         DocumentType.DRIVING_LICENCE -> DocumentCaptureStepBuilder.forDrivingLicence()
-                                .let {
-                                    if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
-                                    else it
-                                }
+                            .let {
+                                if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
+                                else it
+                            }
                         DocumentType.RESIDENCE_PERMIT -> DocumentCaptureStepBuilder.forResidencePermit()
-                                .let {
-                                    if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
-                                    else it
-                                }
+                            .let {
+                                if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
+                                else it
+                            }
                         DocumentType.VISA -> DocumentCaptureStepBuilder.forVisa()
-                                .let {
-                                    if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
-                                    else it
-                                }
+                            .let {
+                                if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
+                                else it
+                            }
                         DocumentType.WORK_PERMIT -> DocumentCaptureStepBuilder.forWorkPermit()
-                                .let {
-                                    if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
-                                    else it
-                                }
+                            .let {
+                                if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
+                                else it
+                            }
                         DocumentType.GENERIC -> DocumentCaptureStepBuilder.forGenericDocument()
-                                .let {
-                                    if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
-                                    else it
-                                }
+                            .let {
+                                if (countryCodeEnum != null) it.withCountry(countryCodeEnum)
+                                else it
+                            }
                         DocumentType.UNKNOWN -> {
                             System.err.println("Unexpected DocumentType value: [$docTypeEnum]")
                             throw Exception("Unexpected DocumentType value.")
@@ -189,7 +193,7 @@ class OnfidoSdk(
 
             val captureFaceEnabled = flowSteps.containsKey("captureFace")
             val captureFace =
-                if (captureFaceEnabled) flowSteps["captureFace"] as Map<String, Any?> else null
+                if (captureFaceEnabled) flowSteps["captureFace"] as? Map<String, Any?>? else null
 
             if (captureFace != null) {
                 val captureFaceTypeExists = captureFace.containsKey("type")
@@ -210,6 +214,7 @@ class OnfidoSdk(
                     flowStepList.add(FaceCaptureStepBuilder.forPhoto().build())
                 }
             }
+
             flowStepList.add(FlowStep.FINAL)
             return flowStepList.toTypedArray()
         } catch (e: Exception) {
